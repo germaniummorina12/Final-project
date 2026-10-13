@@ -1,0 +1,7 @@
+{
+  "StockFlow.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\GermaniumMorina\\Desktop\\Final-project\\stockflow\\src\\StockFlow.Api",
+  "StockFlow.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\GermaniumMorina\\Desktop\\Final-project\\stockflow\\src\\StockFlow.Application",
+  "StockFlow.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\GermaniumMorina\\Desktop\\Final-project\\stockflow\\src\\StockFlow.Contracts",
+  "StockFlow.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\GermaniumMorina\\Desktop\\Final-project\\stockflow\\src\\StockFlow.Domain",
+  "StockFlow.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\GermaniumMorina\\Desktop\\Final-project\\stockflow\\src\\StockFlow.Infrastructure"
+}

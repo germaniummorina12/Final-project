@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\StockFlow.Application\StockFlow.Application.csproj" />
+    <ProjectReference Include="..\StockFlow.Domain\StockFlow.Domain.csproj" />
+    <ProjectReference Include="..\StockFlow.Contracts\StockFlow.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.*" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.23.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.*" />
+	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
