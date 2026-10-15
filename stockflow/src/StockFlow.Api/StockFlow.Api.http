@@ -1,6 +1,46 @@
-@StockFlow.Api_HostAddress = http://localhost:5182
+@host = http://localhost:5182
 
-GET {{StockFlow.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Health
+GET {{host}}/health
 
-###
+### Products, first page
+GET {{host}}/api/v1/products
+
+### Search and filter
+GET {{host}}/api/v1/products?search=usb&sort=stock&page=1&pageSize=5
+
+### Low stock
+GET {{host}}/api/v1/products/low-stock
+
+### One product
+GET {{host}}/api/v1/products/1
+
+### Its ledger
+GET {{host}}/api/v1/products/1/movements
+
+### Categories
+GET {{host}}/api/v1/categories
+
+### Create a product (initial stock 10)
+POST {{host}}/api/v1/products
+Content-Type: application/json
+
+{ "sku": "kb-777", "name": "Compact Keyboard", "categoryId": 1, "unitPrice": 59.90, "initialStock": 10, "reorderLevel": 3 }
+
+### Place an order
+POST {{host}}/api/v1/orders
+Content-Type: application/json
+
+{ "customerId": 1, "lines": [ { "productId": 1, "quantity": 2 }, { "productId": 2, "quantity": 1 } ] }
+
+### Order more than exists (expect 409 insufficient stock)
+POST {{host}}/api/v1/orders
+Content-Type: application/json
+
+{ "customerId": 1, "lines": [ { "productId": 4, "quantity": 500 } ] }
+
+### Invalid body (expect 400 with an errors object)
+POST {{host}}/api/v1/products
+Content-Type: application/json
+
+{ "sku": "", "name": "", "categoryId": 0, "unitPrice": 0 }
