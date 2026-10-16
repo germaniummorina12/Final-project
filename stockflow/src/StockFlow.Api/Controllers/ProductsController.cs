@@ -41,6 +41,7 @@ public class ProductsController(IProductService products) : ControllerBase
         Ok(await products.UpdateAsync(id, request, ct));
 
     [HttpPost("{id:int}/stock")]
+    [Authorize(Policy = Policies.ManageCatalog)]
     public async Task<ActionResult<ProductDto>> AdjustStock(int id, AdjustStockRequest request, CancellationToken ct) =>
         Ok(await products.AdjustStockAsync(id, request, ct));
 

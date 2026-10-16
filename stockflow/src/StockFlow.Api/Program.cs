@@ -8,6 +8,8 @@ using StockFlow.Infrastructure.Persistence;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using StockFlow.Contracts.Common;
@@ -75,7 +77,30 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddControllers();
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var sanitized = new ModelStateDictionary();
+        foreach (var (key, entry) in context.ModelState)
+        {
+            foreach (var error in entry.Errors)
+            {
+                var isFrameworkError = error.Exception is not null
+                    || error.ErrorMessage.Contains("could not be converted", StringComparison.OrdinalIgnoreCase);
+                var message = isFrameworkError ? "The request body is invalid." : error.ErrorMessage;
+                sanitized.AddModelError(key, message);
+            }
+        }
+
+        return new BadRequestObjectResult(new ValidationProblemDetails(sanitized)
+        {
+            Status = StatusCodes.Status400BadRequest,
+            Title = "One or more validation errors occurred.",
+            Type = "https://stockflow.local/errors/validation"
+        });
+    };
+});
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 builder.Services.AddSignalR();
