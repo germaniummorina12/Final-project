@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using StockFlow.Application.Orders;
+using StockFlow.Api.Security;
 using StockFlow.Contracts.Common;
 using StockFlow.Contracts.Orders;
 
@@ -26,6 +28,7 @@ public class OrdersController(IOrderService orders) : ControllerBase
     }
 
     [HttpPost("{id:int}/cancel")]
+    [Authorize(Policy = Policies.ManageCatalog)]
     public async Task<ActionResult<OrderDto>> Cancel(int id, CancellationToken ct) =>
         Ok(await orders.CancelAsync(id, ct));
 }

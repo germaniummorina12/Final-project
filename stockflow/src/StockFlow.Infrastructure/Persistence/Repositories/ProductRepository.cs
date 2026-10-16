@@ -27,7 +27,7 @@ internal sealed class ProductRepository(AppDbContext db) : IProductRepository
         if (!string.IsNullOrWhiteSpace(criteria.Search))
         {
             var term = $"%{criteria.Search.Trim()}%";
-            query = query.Where(p => EF.Functions.Like(p.Name, term) || EF.Functions.Like(p.Sku, term));
+            query = query.Where(p => EF.Functions.ILike(p.Name, term) || EF.Functions.ILike(p.Sku, term));
         }
 
         if (criteria.CategoryId is { } categoryId)

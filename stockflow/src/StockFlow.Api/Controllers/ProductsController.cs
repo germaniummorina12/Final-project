@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using StockFlow.Application.Products;
+using StockFlow.Api.Security;
 using StockFlow.Contracts.Common;
 using StockFlow.Contracts.Products;
 
@@ -27,6 +29,7 @@ public class ProductsController(IProductService products) : ControllerBase
         Ok(await products.GetMovementsAsync(id, Math.Max(page, 1), Math.Clamp(pageSize, 1, 100), ct));
 
     [HttpPost]
+    [Authorize(Policy = Policies.ManageCatalog)]
     public async Task<ActionResult<ProductDto>> Create(CreateProductRequest request, CancellationToken ct)
     {
         var created = await products.CreateAsync(request, ct);
@@ -42,6 +45,7 @@ public class ProductsController(IProductService products) : ControllerBase
         Ok(await products.AdjustStockAsync(id, request, ct));
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = Policies.AdminOnly)]
     public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
     {
         await products.DeactivateAsync(id, ct);

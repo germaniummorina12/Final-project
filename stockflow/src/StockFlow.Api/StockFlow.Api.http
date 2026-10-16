@@ -1,46 +1,66 @@
 @host = http://localhost:5182
 
+### Login as manager
+# @name login
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "email": "manager@stockflow.local", "password": "StockFlow#2026" }
+
+### TEMP: comment this out, send login above, confirm it returns 200, then uncomment this line
+@token = {{login.response.body.$.token}}
+
 ### Health
 GET {{host}}/health
 
 ### Products, first page
 GET {{host}}/api/v1/products
+Authorization: Bearer {{token}}
 
 ### Search and filter
 GET {{host}}/api/v1/products?search=usb&sort=stock&page=1&pageSize=5
+Authorization: Bearer {{token}}
 
 ### Low stock
 GET {{host}}/api/v1/products/low-stock
+Authorization: Bearer {{token}}
 
 ### One product
 GET {{host}}/api/v1/products/1
+Authorization: Bearer {{token}}
 
 ### Its ledger
 GET {{host}}/api/v1/products/1/movements
+Authorization: Bearer {{token}}
 
 ### Categories
 GET {{host}}/api/v1/categories
+Authorization: Bearer {{token}}
 
 ### Create a product (initial stock 10)
 POST {{host}}/api/v1/products
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "sku": "kb-777", "name": "Compact Keyboard", "categoryId": 1, "unitPrice": 59.90, "initialStock": 10, "reorderLevel": 3 }
 
 ### Place an order
 POST {{host}}/api/v1/orders
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "customerId": 1, "lines": [ { "productId": 1, "quantity": 2 }, { "productId": 2, "quantity": 1 } ] }
 
 ### Order more than exists (expect 409 insufficient stock)
 POST {{host}}/api/v1/orders
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "customerId": 1, "lines": [ { "productId": 4, "quantity": 500 } ] }
 
 ### Invalid body (expect 400 with an errors object)
 POST {{host}}/api/v1/products
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "sku": "", "name": "", "categoryId": 0, "unitPrice": 0 }
