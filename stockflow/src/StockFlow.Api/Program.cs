@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using StockFlow.Contracts.Common;
 using StockFlow.Infrastructure.Auth;
+using StockFlow.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ builder.Services.AddInfrastructure();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
-builder.Services.AddScoped<IStockNotifier, NullStockNotifier>();
+builder.Services.AddScoped<IStockNotifier, SignalRStockNotifier>();
 
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
@@ -77,7 +78,8 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
-
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<LowStockMonitor>();
 
 var app = builder.Build();
 
@@ -93,6 +95,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<StockHub>("/hubs/stock");
 app.MapHealthChecks("/health").AllowAnonymous();
 
 await DbInitializer.InitializeAsync(app.Services, app.Configuration);
